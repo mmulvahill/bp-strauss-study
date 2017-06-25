@@ -51,13 +51,10 @@ sim_parms <- bind_rows(# Reference case #
 # Unused cases
 #---------------------------------------
 # # High pulse mass
-# high_mass           <- reference
-# high_mass[["mua"]]  <- 6.5
-# high_mass[["sda"]] <- 5
+# mass_mean <- 6.5
+# mass_sd   <- 5
 # # Low Error
-# low_error           <- reference
-# low_error[["vare"]] <- 0.005
-
+# error_var <- 0.005
 
 
 #-----------------------------------------------------------
@@ -82,7 +79,7 @@ sim_study <-
 
 
 sim_study$simulation[[1]] %>% .$data %>% plot
-sim_study$simulation[[1]] %>% plot
+sim_study$simulation[1:100] %>% map(plot)
 
 # NOTE: what else does writePulse do other than generate and save the simulated
 #       pulse data
