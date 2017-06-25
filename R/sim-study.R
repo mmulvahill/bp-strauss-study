@@ -14,6 +14,9 @@
 #       mass_sd    = 0.50,
 #       width_mean = 3.5,
 #       width_sd   = 0.50
+#   - Unused cases
+#       High pulse mass: mass_mean <- 6.5; mass_sd <- 5
+#       Low error: error_var <- 0.005
 #--------------------------------------------------------------------------------
 
 
@@ -47,15 +50,6 @@ sim_parms <- bind_rows(# Reference case #
                        sim_parms %>% mutate(case = "high-error",
                                             error_var = 0.02))
 
-#---------------------------------------
-# Unused cases
-#---------------------------------------
-# # High pulse mass
-# mass_mean <- 6.5
-# mass_sd   <- 5
-# # Low Error
-# error_var <- 0.005
-
 
 #-----------------------------------------------------------
 # Generate simulations 
@@ -75,32 +69,7 @@ sim_study <-
     nest(-case, -sim_num, .key = "sim_parms") %>%
     mutate(simulation = map(sim_parms, ~ do.call(simulate_pulse, .x)))
 
-
-
-
-sim_study$simulation[[1]] %>% .$data %>% plot
-sim_study$simulation[1:100] %>% map(plot)
-
-# NOTE: what else does writePulse do other than generate and save the simulated
-#       pulse data
-# writePulse(parameter.list      = parameter.list,
-#            parameter.set.name  = parameter.set.name,
-#            number.of.datasets  = number.of.datasets,
-#            write.plots.to.file = TRUE)
-# TODO: Create plots and save plot pdf
-
-
-################################################################################
-# Old stuff:
-################################################################################
-
-
-#-----------------------------------------------------------
-# Run post-processing script -- i.e. combine each case into 
-# a single RDS file
-# NOTE: Moved to pulser::writePulse() function
-#-----------------------------------------------------------
-#source("R/sim-postprocess.R")
+# sim_study$simulation[1:5] %>% map(plot)
 
 
 #-----------------------------------------------------------
@@ -108,90 +77,46 @@ sim_study$simulation[1:100] %>% map(plot)
 # and create pdf for Nichole
 #-----------------------------------------------------------
 
-# PDF start
-pdf(file = "output/pdf/sim-summary.pdf", 
-    paper = "USr",
-    width = 0,
-    height = 0) #width = 11, height = 8.5)
-
-
 # Sim parameters table
-parmstable <- 
-  sim.parms %>% 
-  t %>% 
-  cbind(c("Case", "Seed", "Num of Samples", "Sampling Frequency", 
-          "Error Variance", "IPI Mean", "IPI Var", "IPI Min", "Mass Mean",
-          "Mass Var", "Width Mean", "Width Var", "Half-life Mean", 
-          "Half-life Var", "Baseline Mean", "Baseline Var", 
-          "Baseline (Constant)", "Half-life (Constant)"),
-        .) %>%
-  tableGrob(rows = NULL)
+caption <- 
+  "**Note that IPI is on the sampling units scale, but pulse
+                    width and half-life are on a minutes scale." %>%
+  textGrob(gp = gpar(fontsize = 11))
 
-caption <- textGrob("**Note that IPI is on the sampling units scale, but pulse
-                    width and half-life are on a minutes scale.",
-                    gp = gpar(fontsize = 11))
-parmstable %<>% 
-  gtable_add_rows(., heights = grobHeight(caption) + unit(0.5, "line"))
-parmstable %<>% 
-  gtable_add_grob(., 
-                  list(caption),
-                  t = nrow(.), 
-                  l = 1,
-                  r = ncol(.))
-grid.newpage()
-grid.draw(parmstable)
-rm(caption, parmstable)
+parmstable <- sim_parms %>% t %>% cbind(rownames(.), .) %>%
+  tableGrob(rows = NULL) %>% 
+  gtable_add_rows(., heights = grobHeight(caption) + unit(0.5, "line")) %>%
+  gtable_add_grob(., list(caption), t = nrow(.), l = 1, r = ncol(.))
 
 # Sim plots
-# Reference
-refsims <- 
-  readRDS("./output/Rds/sims_pulse_reference.Rds") %>%
-  filter(dataset %in% 1:20)
+sim_figs <- 
+  sim_study %>% group_by(case) %>% 
+    filter(sim_num %in% 1:20) %>% 
+    mutate(time_series = map(simulation, ~ .x$data)) %>%
+    select(-sim_parms, -simulation) %>% 
+    unnest %>% split(.$case) %>%
+    map(function(x) {
+           ggplot(data = x, aes(x = time, y = concentration)) +
+             geom_path() +
+             ylim(0, max(x$concentration)) + 
+             facet_wrap(~ sim_num, nrow = 5, ncol = 4) +
+             ggtitle(paste("First 20 Simulated Concentrations",
+                           unique(x$case))) 
+                      })
 
-reffigs <- 
-  ggplot(data = refsims, aes(x = time, y = concentration)) +
-    geom_path() +
-    ggtitle("First 20 Simulated Concentrations: Reference Case") +
-    ylim(0, max(refsims$concentration)) + 
-    facet_wrap(~dataset, nrow = 5, ncol = 4)
-print(reffigs)
-
-# Low-mass
-lowmasssims <- 
-  readRDS("./output/Rds/sims_pulse_low-mass.Rds") %>%
-  filter(dataset %in% 1:20)
-
-lowmassfigs <- 
-  ggplot(data = lowmasssims, aes(x = time, y = concentration)) +
-    geom_path() +
-    ggtitle("First 20 Simulated Concentrations: Low Pulse Mass Case") +
-    #ylim(0, max(refsims$CONC)) + 
-    ylim(0, max(lowmasssims$concentration)) + 
-    facet_wrap(~dataset, nrow = 5, ncol = 4)
-print(lowmassfigs)
-
-# High-error
-higherrorsims <- 
-  readRDS("./output/Rds/sims_pulse_high-error.Rds") %>%
-  filter(dataset %in% 1:20)
-
-higherrfigs <-
-  ggplot(data = higherrorsims, aes(x = time, y = concentration)) +
-    geom_path() +
-    ggtitle("First 20 Simulated Concentrations: High Error Case") +
-    #ylim(0, max(refsims$CONC)) + 
-    ylim(0, max(higherrorsims$concentration)) + 
-    facet_wrap(~dataset, nrow = 5, ncol = 4)
-print(higherrfigs)
-
+# Create PDF 
+pdf(file = "output/sim_study_summary.pdf", paper = "USr", width = 0, height = 0)
+grid.newpage()
+grid.draw(parmstable)
+sim_figs
 dev.off()
 
 
-
-
-
-
-
+#-----------------------------------------------------------
+# Save sims and clean up workspace
+#-----------------------------------------------------------
+saveRDS(sim_study, file = "./output/sim_study.Rds")
+rm(sim_parms, number_of_datasets, sim_figs, caption, parmstable)
 
 
 
