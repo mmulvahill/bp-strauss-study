@@ -44,8 +44,8 @@ sim_parms <- bind_rows(# Reference case #
                        sim_parms,
                        # Low pulse mass case #
                        sim_parms %>% mutate(case = "low-mass",
-                                            mass_mean = 0.25,
-                                            mass_sd   = 0.50),
+                                            mass_mean = 1.3,
+                                            mass_sd   = 1.65),
                        # High Error Case #
                        sim_parms %>% mutate(case = "high-error",
                                             error_var = 0.02))
