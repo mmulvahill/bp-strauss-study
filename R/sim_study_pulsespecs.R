@@ -55,8 +55,7 @@ priors <-
               mutate(prior_location_range = 60,
                      prior_scenario = str_replace_all(prior_scenario, "40", "60")))
 
-priors <- 
-  priors %>% nest(-case, -prior_scenario, .key = "pulse_spec_args")
+priors <- priors %>% nest(-case, -prior_scenario, .key = "pulse_spec_args")
 
 full_join(sim_study, priors)
 
