@@ -5,6 +5,8 @@
 # Updated: 2017-06-23
 #
 # Notes:
+#   - This file replaces: - R/sim-parms.R
+#                         - R/sim-study.R
 #   - ggplot2 options were set by library(pulser) in thesis, look there for
 #     more detail
 #   - Parameters sets notes -- Converted these parameter values roughly to
@@ -97,6 +99,7 @@ sim_figs <-
     unnest %>% split(.$case) %>%
     map(function(x) {
            ggplot(data = x, aes(x = time, y = concentration)) +
+             geom_point(size = 0.5) +
              geom_path() +
              ylim(0, max(x$concentration)) + 
              facet_wrap(~ sim_num, nrow = 5, ncol = 4) +
