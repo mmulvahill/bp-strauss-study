@@ -1,16 +1,17 @@
 #-------------------------------------------------------------------------------
-# Reference argument sets 
-# 
+# Argument sets 
 #   Order statistic, Hardcore (R=40, gamma = 0.0), Strauss (R=40, gamma=0.1)
 #
-# Date: 9/23/15
-#
-# TODO: Add which location prior is used to the print function
+# Date: 2017-07-13
+# Notes:
+#   This file replaces: - R/args-reference.R
+#                       - R/args-lowsnr.R
+#                       - R/args-hcsensitivity.R
+# 
+# List of TODO: 
+#   - Try doing this in a tidy way...
+#   - Double check defaults with list at bottom of script)
 #-------------------------------------------------------------------------------
-
-# TODO: Try doing this in a tidy way...
-
-# Reference sims (TODO: double check defaults with list at bottom of script)
 
 
 #---------------------------------------
@@ -43,6 +44,7 @@ priors <-
 
 #---------------------------------------
 # Add in sensitivity scenarios
+#   (Strauss and Hardcore w/ range of 20 and 60)
 #---------------------------------------
 priors <- 
   bind_rows(priors,
@@ -57,7 +59,7 @@ priors <-
 
 priors <- priors %>% nest(-case, -prior_scenario, .key = "pulse_spec_args")
 
-full_join(sim_study, priors)
+sim_study <- full_join(sim_study, priors)
 
 
 
