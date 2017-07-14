@@ -18,13 +18,15 @@ library(grid)
 library(gridExtra)
 library(gtable)
 library(stringr)
-library(pryr)
+library(pryr) # consider removing after development
+library(readr)
         
 #options("verbose" = TRUE)
 setwd("~/Projects/Thesis/thesis-analysis/new_dir_str/")
 
 # Number of cores to use - This would need to be incorporated into other scripts
 #n.cores <- 4
+# options("stringsAsFactors" = FALSE)
 
 #---------------------------------------------------------------------
 # Install pulsatile package
@@ -37,12 +39,17 @@ library(pulsatile)
 #---------------------------------------------------------------------
 # A) Create simulated data
 #---------------------------------------------------------------------
-
 # Generate simulated data 
 source("R/sim_study_data.R")
+# Create pulse_spec objects, and join with sim_study object
 source("R/sim_study_pulsespecs.R")
+# sim_study object (data_frame w/ list-cols) now contains all info by row
+# needed to run mcmc
 
-# Create pulse_spec objects
 
+#---------------------------------------------------------------------
+# B) Prepare healthy patient data from LH Depression Study
+#---------------------------------------------------------------------
+source("R/depression_lh_data.R")
 
 
