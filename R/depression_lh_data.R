@@ -29,80 +29,80 @@
 # Functions 
 #-----------------------------------------------------------
 
-# Function for creating args Rds files for each mcmc run
-create_argrds <- 
-  function(arg.df, mcmc.name, seed, data.dir = "depr") { 
-    # only 5 valid mcmcnames as of now
-    if (!(mcmc.name %in% c("orderstat", "strauss20-010", "strauss40-010",
-                           "hardcore40", "hardcore20", "hardcore60",
-                           "hardcore10", "poisson"))) {
-      warning("invalid mcmc.name")
-    }
-
-    # data nickname
-    data.nickname <- str_replace_all(data.dir, "/", "-")
-
-    # Set strauss prior values
-    pr.gamma <- switch(mcmc.name,
-                       orderstat = -1,
-                       'strauss40-010' = 0.10,
-                       'strauss20-010' = 0.10,
-                       hardcore40 = 0,
-                       hardcore20 = 0,
-                       hardcore60 = 0, 
-                       hardcore10 = 0,
-                       poisson    = 1)
-    pr.range <- switch(mcmc.name,
-                       orderstat = -1,
-                       'strauss40-010' = 40,
-                       'strauss20-010' = 20,
-                       hardcore40 = 40,
-                       hardcore20 = 20,
-                       hardcore60 = 60,
-                       hardcore10 = 10,
-                       poisson    = 20)
-
-    # Set seed
-    set.seed(seed)
-
-    # Create new dataframes and sort/keep in correct column order
-    arg.df <- 
-      arg.df %>%
-        mutate(dataset = sprintf("%03d", dataset)) %>%
-        mutate(data.store = "./remote-data/",
-               data.name = data.nickname,
-               mcmc.run.name = mcmc.name,
-               arg.path = paste0("./remote-data/", data.dir, "/", mcmc.name,
-                                 "/args/arg_pulse_", data.nickname, "_", dataset,
-                                 "_", mcmc.name, ".dat"),
-               data.path = paste0("./remote-data/", data.dir, "/data/pulse_",
-                                  data.nickname, "_", dataset, ".dat"),
-               common.path = paste0("./remote-data/", data.dir, "/", mcmc.name,
-                                    "/chains/c_pulse_", data.nickname, "_", dataset,
-                                    "_", mcmc.name, ".dat"),
-               pulse.path = paste0("./remote-data/", data.dir, "/", mcmc.name,
-                                   "/chains/p_pulse_", data.nickname, "_", dataset,
-                                   "_", mcmc.name, ".dat"),
-               seed1 = runif(length(dataset), exp(19), exp(23)),
-               seed2 = runif(length(dataset), exp(19), exp(23)),
-               seed3 = runif(length(dataset), exp(19), exp(23)),
-               prior.location.gamma = pr.gamma,
-               prior.location.range = pr.range) %>%
-        select(dataset, data.store, data.name, mcmc.run.name, arg.path,
-               data.path, common.path, pulse.path, seed1, seed2, seed3,
-               iterations:prior.error.beta, prior.location.gamma,
-               prior.location.range, max.sd.mass:pv.pulselocations) 
-    
-    # Custom range for patient 6 of depression (luteal)
-    arg.df %<>% mutate(prior.location.range = ifelse(dataset == "006", 20, 
-                                                     prior.location.range))
-
-    saveRDS(arg.df, file = paste0("local-data/arg-", data.nickname, "-", 
-                                  mcmc.name, ".rds")) 
-
-    return(arg.df)
-  }
-
+# # Function for creating args Rds files for each mcmc run
+# create_argrds <- 
+#   function(arg.df, mcmc.name, seed, data.dir = "depr") { 
+#     # only 5 valid mcmcnames as of now
+#     if (!(mcmc.name %in% c("orderstat", "strauss20-010", "strauss40-010",
+#                            "hardcore40", "hardcore20", "hardcore60",
+#                            "hardcore10", "poisson"))) {
+#       warning("invalid mcmc.name")
+#     }
+# 
+#     # data nickname
+#     data.nickname <- str_replace_all(data.dir, "/", "-")
+# 
+#     # Set strauss prior values
+#     pr.gamma <- switch(mcmc.name,
+#                        orderstat = -1,
+#                        'strauss40-010' = 0.10,
+#                        'strauss20-010' = 0.10,
+#                        hardcore40 = 0,
+#                        hardcore20 = 0,
+#                        hardcore60 = 0, 
+#                        hardcore10 = 0,
+#                        poisson    = 1)
+#     pr.range <- switch(mcmc.name,
+#                        orderstat = -1,
+#                        'strauss40-010' = 40,
+#                        'strauss20-010' = 20,
+#                        hardcore40 = 40,
+#                        hardcore20 = 20,
+#                        hardcore60 = 60,
+#                        hardcore10 = 10,
+#                        poisson    = 20)
+# 
+#     # Set seed
+#     set.seed(seed)
+# 
+#     # Create new dataframes and sort/keep in correct column order
+#     arg.df <- 
+#       arg.df %>%
+#         mutate(dataset = sprintf("%03d", dataset)) %>%
+#         mutate(data.store = "./remote-data/",
+#                data.name = data.nickname,
+#                mcmc.run.name = mcmc.name,
+#                arg.path = paste0("./remote-data/", data.dir, "/", mcmc.name,
+#                                  "/args/arg_pulse_", data.nickname, "_", dataset,
+#                                  "_", mcmc.name, ".dat"),
+#                data.path = paste0("./remote-data/", data.dir, "/data/pulse_",
+#                                   data.nickname, "_", dataset, ".dat"),
+#                common.path = paste0("./remote-data/", data.dir, "/", mcmc.name,
+#                                     "/chains/c_pulse_", data.nickname, "_", dataset,
+#                                     "_", mcmc.name, ".dat"),
+#                pulse.path = paste0("./remote-data/", data.dir, "/", mcmc.name,
+#                                    "/chains/p_pulse_", data.nickname, "_", dataset,
+#                                    "_", mcmc.name, ".dat"),
+#                seed1 = runif(length(dataset), exp(19), exp(23)),
+#                seed2 = runif(length(dataset), exp(19), exp(23)),
+#                seed3 = runif(length(dataset), exp(19), exp(23)),
+#                prior.location.gamma = pr.gamma,
+#                prior.location.range = pr.range) %>%
+#         select(dataset, data.store, data.name, mcmc.run.name, arg.path,
+#                data.path, common.path, pulse.path, seed1, seed2, seed3,
+#                iterations:prior.error.beta, prior.location.gamma,
+#                prior.location.range, max.sd.mass:pv.pulselocations) 
+#     
+#     # Custom range for patient 6 of depression (luteal)
+#     arg.df %<>% mutate(prior.location.range = ifelse(dataset == "006", 20, 
+#                                                      prior.location.range))
+# 
+#     saveRDS(arg.df, file = paste0("local-data/arg-", data.nickname, "-", 
+#                                   mcmc.name, ".rds")) 
+# 
+#     return(arg.df)
+#   }
+# 
 
 
 #---------------------------------------
@@ -119,6 +119,7 @@ labels.df <- read_fwf(file.name, skip = 8,
              arrange(patient, pair) 
 
 rm(labels.colnames, file.name)
+
 
 #-----------------------------------------------------------
 #  Read in data, combine with labels/groups, save as a combined dataframe, and
@@ -144,43 +145,25 @@ idkey <- long %>% select(idno) %>% unique %>% mutate(dataset = 1:n())
 saveRDS(idkey, "../remote-data/depression/luteal/idkey.Rds")
 
 
+long <- 
+  long %>% 
+  left_join(., idkey, by = "idno") %>% 
 # Filter to only control patients in luteal phase
-long <- long %>% 
-  left_join(., idkey, by = "idno") %>% filter(pair == "l" & patient == "c") %>%
-  select(-idno)
-
-
-#---------------------------------------
-# Save 
-#---------------------------------------
-
-# NOT NEEDED 
-# Save as separate space delimited files in data directory
-# dir.create("../remote-data/depression/luteal/data/")
-# lapply(unique(long$dataset), function(x) {
-#          dat <- filter(long, dataset == x)
-#          num <- x %>% sprintf("%03d", .)
-#          dat %>%
-#            select(OBS, MIN, CONC) %>%
-#            write.table(., sep = " ", quote = FALSE, row.names = FALSE,
-#                        file = paste0("remote-data/depression/luteal/data/pulse_depression-luteal_",
-#                                      num, ".dat"))
-#                       })
-
-# Save Rds version for later use
-long <-
-  long %>%
-    select(-TIME) %>% 
-    rename(obs = OBS,
-           time = MIN,
-           concentration = CONC) %>%
-    mutate(patient = factor(patient, levels = c("c", "p"), 
-                            labels = c("Control", "Patient")),
-           pair = factor(pair, levels = c("l", "f"),
-                         labels = c("Luteal phase", "Follicular phase")))
+  filter(pair == "l" & patient == "c") %>%
+  # Remove identifiable info
+  select(-idno) %>%
+  select(-TIME) %>% 
+  rename(obs = OBS, time = MIN, concentration = CONC, 
+         group = patient, phase = pair) %>%
+  mutate(group = factor(group, levels = c("c", "p"), 
+                        labels = c("Control", "Patient")),
+         phase = factor(phase, levels = c("l", "f"),
+                        labels = c("Luteal", "Follicular"))) %>%
+  select(dataset, group, phase, obs, time, concentration) %>%
+  nest(-dataset, -group, -phase)
 
 # Full data
-saveRDS(long, file = "remote-output/Rds/data_pulse_depression-luteal.Rds")
+saveRDS(long, file = "../remote-output/Rds/data_pulse_depression-luteal.Rds")
 
 
 
@@ -190,12 +173,11 @@ saveRDS(long, file = "remote-output/Rds/data_pulse_depression-luteal.Rds")
 #---------------------------------------
 
 # Add combined idno/subjnum variables
-long %<>% 
-  mutate(dataset.char = sprintf("%03g", dataset))
+long <- long %>% mutate(dataset_char = sprintf("%03g", dataset))
 
 # Plot and save to PDF
 {
-  pdf(file = "remote-data/depression/luteal/concentration-figures.pdf", 
+  pdf(file = "../remote-data/depression/luteal/concentration-figures.pdf", 
       paper = "USr",
       width = 0,
       height = 7.5, 
@@ -204,10 +186,8 @@ long %<>%
   all.figs <- 
     long %>%
       ggplot() +
-        geom_path(aes(y = concentration, x = time), 
-                  size = 0.5) +
-        geom_point(aes(y = concentration, x = time), 
-                  size = 0.5) +
+        geom_path(aes(y = concentration, x = time), size = 0.5) +
+        geom_point(aes(y = concentration, x = time), size = 0.5) +
         facet_wrap( ~ dataset.char, nrow = 5, scales = 'free_y') +
         xlab("Time (min)") +
         ylab("Concentration") +
@@ -218,10 +198,8 @@ long %<>%
   all.figs.same.axes <- 
     long %>%
       ggplot() +
-        geom_path(aes(y = concentration, x = time), 
-                  size = 0.5) +
-        geom_point(aes(y = concentration, x = time), 
-                  size = 0.5) +
+        geom_path(aes(y = concentration, x = time), size = 0.5) +
+        geom_point(aes(y = concentration, x = time), size = 0.5) +
         facet_wrap( ~ dataset.char, nrow = 5) + 
         xlab("Time (min)") +
         ylab("Concentration") +
@@ -245,6 +223,7 @@ long %<>%
                    ylab("Concentration") +
                    ggtitle(paste("Patient:", name))
              print(fig)
+
                 })
   dev.off()
 }
@@ -260,7 +239,7 @@ long %<>%
 
 # Read in argument file, split, and convert to dataframe
 arg.dataset9 <- 
-  readLines("remote-data/depression/luteal/input9.txt") %>%
+  readLines("../remote-data/depression/luteal/input9.txt") %>%
   str_split(., " ") %>% do.call(c, .) %>%
   as.matrix(byrow=TRUE) %>% t %>%
   as.data.frame %>% 
@@ -305,7 +284,7 @@ arg.dataset9 <-
     mutate_each(funs(as.numeric(as.character(.))), 
                 iterations:pv.pulselocations) %>%
     mutate(iterations = 500000) %>%
-    mutate(prior.mass.mean       = 1.25,
+    mutate(prior.mass.mean       = 3.5,
            prior.mass.var        = 10,
            prior.width.mean      = 3,
            prior.width.var       = 10,
