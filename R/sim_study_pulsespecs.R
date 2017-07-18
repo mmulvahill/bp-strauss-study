@@ -61,6 +61,7 @@ priors <- priors %>% nest(-case, -prior_scenario, .key = "pulse_spec_args")
 
 sim_study <- full_join(sim_study, priors)
 
+rm(priors)
 
 
 #-----------------------------------------------------------
