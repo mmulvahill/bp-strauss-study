@@ -20,13 +20,18 @@ library(gtable)
 library(stringr)
 library(pryr) # consider removing after development
 library(readr)
+library(ggthemes)
+
+theme_set(theme_tufte())
         
-#options("verbose" = TRUE)
 setwd("~/Projects/Thesis/thesis-analysis/new_dir_str/")
 
 # Number of cores to use - This would need to be incorporated into other scripts
 #n.cores <- 4
 # options("stringsAsFactors" = FALSE)
+#options("verbose" = TRUE)
+#remote_dir <- "./remote-storage/"
+remote_dir <- "../remote-data"
 
 #---------------------------------------------------------------------
 # Install pulsatile package
@@ -50,6 +55,9 @@ source("R/sim_study_pulsespecs.R")
 #---------------------------------------------------------------------
 # B) Prepare healthy patient data from LH Depression Study
 #---------------------------------------------------------------------
+#source("R/depression_lh_deident.R") # Run once from a PHI-safe computer
 source("R/depression_lh_data.R")
+
+
 
 
