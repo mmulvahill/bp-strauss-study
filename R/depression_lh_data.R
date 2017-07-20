@@ -63,7 +63,7 @@ lh_data <-
       height = 7.5, 
       onefile = TRUE)
 
-  all.figs <- 
+  all_figs <- 
     lh_data %>% unnest %>%
       ggplot() +
         geom_path(aes(y = concentration, x = time), size = 0.5) +
@@ -73,9 +73,9 @@ lh_data <-
         ylab("Concentration") +
         ggtitle(paste("All luteal, control patients")) 
   
-  print(all.figs)
+  print(all_figs)
   
-  all.figs.same.axes <- 
+  all_figs_same_axes <- 
     lh_data %>% unnest %>%
       ggplot() +
         geom_path(aes(y = concentration, x = time), size = 0.5) +
@@ -85,7 +85,7 @@ lh_data <-
         ylab("Concentration") +
         ggtitle(paste("All luteal, control patients (same axes)")) 
   
-  print(all.figs.same.axes)
+  print(all_figs_same_axes)
   
   placeholder <- 
     lapply(unique(lh_data$dataset_char), function(x) {
@@ -105,6 +105,7 @@ lh_data <-
              print(fig)
 
                 })
+  rm(all_figs, all_figs_same_axes, placeholder)
   dev.off()
 }
 
@@ -233,6 +234,7 @@ lh_data <-
 saveRDS(lh_data, "./data/deprstudy-lcontrols-cleaned.Rds")
 
 pryr::object_size(lh_data)
+rm(priors, lh_arg, deident_arg_file, deident_data_file)
 
 
 #-------------------------------------------------------------------------------

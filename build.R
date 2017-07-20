@@ -19,6 +19,7 @@ library(gridExtra)
 library(gtable)
 library(stringr)
 library(pryr) # consider removing after development
+library(assertr) 
 library(readr)
 library(ggthemes)
 
@@ -55,9 +56,16 @@ source("R/sim_study_pulsespecs.R")
 #---------------------------------------------------------------------
 # B) Prepare healthy patient data from LH Depression Study
 #---------------------------------------------------------------------
-#source("R/depression_lh_deident.R") # Run once from a PHI-safe computer
-source("R/depression_lh_data.R")
+###source("R/depression_lh_deident.R") # Run once from a PHI-safe computer
+# source("R/depression_lh_data.R") # temporarily commented out
 
 
+#---------------------------------------------------------------------
+# 1) Run MCMC analyses
+#---------------------------------------------------------------------
+
+# apply pulsespec()
+# run fit_pulse()
+# Post-process -- think this is just creating diagnostics now
 
 
