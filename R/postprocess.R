@@ -9,7 +9,18 @@
 #   4. Create diagnostics PDF
 #-------------------------------------------------------------------------------
 
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(pulsatile)
+tmpfits <- readRDS("~/Projects/Thesis/thesis-analysis/first_run_mdplyr_fits.Rds")
+tmpfits$fits[[4]]$common %>%
+  gather(key = key, value = value, num_pulses:sd_widths) %>%
+  ggplot(., aes(x = iteration, y = value)) +
+  geom_path(size = 0.10) +
+  facet_wrap( ~ key, ncol = 2, nrow = 4, scales = "free") 
 
+################# ORIGINAL CODE ###################################
 ppOne <- function(dataset.nums, burnin, thin){# {{{
   #library(parallel)
   #library(pulser)

@@ -1,1 +1,36 @@
-data/
+# files for git to ignore.  these will not be copied to repository
+#  vim temp files
+*.swp
+*.swo
+*~
+#  libreoffice temp files
+.~lock*
+#  rstudio project file
+#*.Rproj
+#  osx dir metadata
+.DS_Store
+#  rstudio project temp files
+.Rproj.user
+#  rstudio command history
+.Rhistory
+#  rstudio osx history
+.Rapp.history
+#  R's directory workspace - want fresh workspace each session
+.Rdata
+# knit/latex temp files
+*-concordance.tex
+*.aux
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.log
+*.tex
+*.out
+
+##### Dirs too large for git
+#datastore
+#output
+remote-data/depression
+remote-data/simulations
+remote-data/obesity
+remote-output

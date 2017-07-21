@@ -25,7 +25,7 @@ library(ggthemes)
 
 theme_set(theme_tufte())
         
-setwd("~/Projects/Thesis/thesis-analysis/new_dir_str/")
+setwd("~/Projects/BayesPulse/bp-strauss-study/")
 
 # Number of cores to use - This would need to be incorporated into other scripts
 #n.cores <- 4
