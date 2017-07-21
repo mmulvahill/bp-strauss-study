@@ -34,10 +34,10 @@ sim_parms <-
              ipi_mean   = 12, 
              ipi_var    = 40, 
              ipi_min    = 4,  
-             mass_mean  = 3.5, 
-             mass_sd    = 1.65, # should range from exp(0.75) to exp(6.5)
+             mass_mean  = 4, 
+             mass_sd    = 2.1, # should range from exp(0.75) to exp(6.5)
              width_mean = 35,   
-             width_sd   = 1.65,
+             width_sd   = 20,
              constant_baseline = 2.6,
              constant_halflife = 45)
 
@@ -46,8 +46,8 @@ sim_parms <- bind_rows(# Reference case #
                        sim_parms,
                        # Low pulse mass case #
                        sim_parms %>% mutate(case = "low-mass",
-                                            mass_mean = 1.3,
-                                            mass_sd   = 1.65),
+                                            mass_mean = 1.5,
+                                            mass_sd   = 1),
                        # High Error Case #
                        sim_parms %>% mutate(case = "high-error",
                                             error_var = 0.02))
