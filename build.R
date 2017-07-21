@@ -32,7 +32,11 @@ setwd("~/Projects/BayesPulse/bp-strauss-study/")
 # options("stringsAsFactors" = FALSE)
 #options("verbose" = TRUE)
 #remote_dir <- "./remote-storage/"
-remote_dir <- "../remote-data"
+# switch(Sys.info()[["sysname"]],
+       #Linux = 
+file.remove("remote-storage")
+file.symlink("~/Projects/BayesPulse/remote-storage", "remote-storage")
+remote_dir <- "./remote-storage"
 
 #---------------------------------------------------------------------
 # Install pulsatile package

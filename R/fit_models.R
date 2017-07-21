@@ -5,7 +5,7 @@ print(sim_study)
 devtools::install_github("hadley/multidplyr", ref = "0085ded")
 library(multidplyr)
 
-cluster <- create_cluster(7)
+cluster <- create_cluster(11)
 set_default_cluster(cluster)
 cluster_library(cluster, c("pulsatile", "purrr"))
 get_default_cluster()
@@ -26,5 +26,5 @@ test_fits <-
 
 collected_fits <- collect(test_fits)
 object_size(collected_fits)
-
+saveRDS(collected_fits, file = "remote-storage/third_run_mdplyr_42fits_updated_simparms.Rds")
 
