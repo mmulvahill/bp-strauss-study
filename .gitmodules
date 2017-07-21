@@ -1,0 +1,3 @@
+[submodule "lib/pulsatile"]
+	path = lib/pulsatile
+	url = git@github.com:BayesPulse/pulsatile.git
