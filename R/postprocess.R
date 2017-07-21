@@ -14,12 +14,20 @@ library(ggplot2)
 library(tidyr)
 library(pulsatile)
 # tmpfits <- readRDS("remote-storage/first_run_mdplyr_fits.Rds")
-tmpfits <- readRDS("remote-storage/second_run_mdplyr_42fits.Rds")
-tmpfits$fits[[3]]$common %>%
+tmpfits <- readRDS("remote-storage/third_run_mdplyr_42fits_updated_simparms.Rds")
+
+this_fit <- tmpfits[3, ]
+this_fit$fits[[1]]$common %>%
   gather(key = key, value = value, num_pulses:sd_widths) %>%
   ggplot(., aes(x = value)) +
   geom_histogram() +
   facet_wrap( ~ key, ncol = 2, nrow = 4, scales = "free") 
+this_fit$fits[[1]]$common %>%
+  gather(key = key, value = value, num_pulses:sd_widths) %>%
+  ggplot(., aes(x = iteration, y = value)) +
+  geom_path(size = 0.1) +
+  facet_wrap( ~ key, ncol = 2, nrow = 4, scales = "free") 
+plot(this_fit[["simulation"]][[1]])
 
 ################# ORIGINAL CODE ###################################
 ppOne <- function(dataset.nums, burnin, thin){# {{{
