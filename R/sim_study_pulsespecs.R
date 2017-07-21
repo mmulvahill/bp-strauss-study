@@ -12,16 +12,30 @@
 #   - Try doing this in a tidy way...
 #   - Double check defaults with list at bottom of script)
 #-------------------------------------------------------------------------------
+options(stringsAsFactors = FALSE)
 
 
 #---------------------------------------
 # Set up the 3 primary prior scenarios 
 #---------------------------------------
-priors <- data_frame(case                 = "reference",
-                     prior_scenario       = "orderstat",
-                     location_prior_type  = "order-statistic",
-                     prior_location_gamma = NA,
-                     prior_location_range = NA)
+priors <- data.frame(case                   = "reference",
+                     prior_scenario         = "orderstat",
+                     location_prior_type    = "order-statistic",
+                     prior_location_gamma   = NA,
+                     prior_location_range   = NA,
+                     prior_mass_mean        = 4,
+                     prior_mass_var         = 100,
+                     prior_width_mean       = 35,
+                     prior_width_var        = 100,
+                     prior_baseline_mean    = 2.6,
+                     prior_baseline_var     = 100,
+                     prior_halflife_mean    = 45,
+                     prior_halflife_var     = 100,
+                     prior_error_alpha      = 0.0001,
+                     prior_error_beta       = 0.0001,
+                     prior_max_sd_mass      = 100,
+                     prior_max_sd_width     = 150,
+                     prior_mean_pulse_count = 12) %>% as_data_frame
 priors <- bind_rows(priors,
                     priors %>% mutate(prior_scenario       = "hardcore40",
                                       location_prior_type  = "strauss",
