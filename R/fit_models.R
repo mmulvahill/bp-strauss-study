@@ -26,5 +26,6 @@ test_fits <-
 
 collected_fits <- collect(test_fits)
 object_size(collected_fits)
-saveRDS(collected_fits, file = "remote-storage/third_run_mdplyr_42fits_updated_simparms.Rds")
+saveRDS(collected_fits, 
+        file = "remote-storage/fourth_run_mdplyr_42fits_larger_small_mass_meansd.Rds")
 
