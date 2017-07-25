@@ -22,10 +22,13 @@ test_fits <-
   mutate(fits = map2(simulation, this_spec,
                      ~ fit_pulse(.data = .x$data, 
                                  spec = .y, 
-                                 thin = 50, iters = 250000, use_tibble = TRUE)))
+                                 thin = 50, burnin = 50000, iters = 250000, 
+                                 use_tibble = TRUE)))
 
 collected_fits <- collect(test_fits)
-object_size(collected_fits)
+# object_size(collected_fits)
+# object_size(test_fits)
+# object_size(sim_study)
 saveRDS(collected_fits, 
-        file = "remote-storage/fourth_run_mdplyr_42fits_larger_small_mass_meansd.Rds")
+        file = "remote-storage/fifth_run_mdplyr_42fits_larger_small_mass_meansd_wburnin.Rds")
 

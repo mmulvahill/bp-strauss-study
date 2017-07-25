@@ -42,7 +42,7 @@ remote_dir <- "./remote-storage"
 # Install pulsatile package
 #---------------------------------------------------------------------
 
-# install_github("BayesPulse/pulsatile") #, ref = "tag:biometrics")
+devtools::install("lib/pulsatile") #, ref = "tag:biometrics")
 library(pulsatile)
 
 
