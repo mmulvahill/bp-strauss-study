@@ -1,12 +1,17 @@
 #-------------------------------------------------------------------------------
 # **NEW** Build script for entire thesis-analysis repo
 #
-# Date: 6/23/2017
-#-------------------------------------------------------------------------------
+# Date: 6/23/2017 #-------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------
 # Options and packages
 #---------------------------------------------------------------------
+
+# Is this a test (smaller sample) run?
+TEST <- TRUE
+RUN  <- FALSE
+
+
 library(knitr)
 library(devtools)
 library(dplyr)
@@ -22,6 +27,9 @@ library(pryr) # consider removing after development
 library(assertr) 
 library(readr)
 library(ggthemes)
+
+devtools::install_github("hadley/multidplyr", ref = "0085ded")
+library(multidplyr)
 
 theme_set(theme_tufte())
         
@@ -67,6 +75,8 @@ source("R/sim_study_pulsespecs.R")
 #---------------------------------------------------------------------
 # 1) Run MCMC analyses
 #---------------------------------------------------------------------
+source("R/bulk_diagnostics_pdf.R")
+source("R/fit_models.R")
 
 # apply pulsespec()
 # run fit_pulse()
