@@ -7,7 +7,7 @@
 # print_diag_PDF()
 #   TODO: list and check for needed columns in tidy_pulse_df
 ########################################
-print_diag_PDF <- function(tidy_pulse_df) {
+print_diag_PDF <- function(tidy_pulse_df, out_file) {
 
   # Name identifiers for use in filename
   data_nickname <- unique(tidy_pulse_df$case)
@@ -96,8 +96,7 @@ print_diag_PDF <- function(tidy_pulse_df) {
 
 
   # Print arg table and diagnostic plots to pdf ------------
-  pdf(file = paste0(remote_dir, "/diagnostics/", 
-                   "diag_", data_nickname, "_", mcmc_name, ".pdf"),
+  pdf(file    = out_file,
       paper   = "USr",
       width   = 0,
       height  = 8,

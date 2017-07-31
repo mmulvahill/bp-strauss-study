@@ -51,7 +51,7 @@ if (TEST & RUN) {
              })
 
   sim_study_test %>% mutate(fits =  test_fits) %>% 
-    print_diag_PDF  
+    print_diag_PDF(out_file = "output/diagnostics/diag_test_ref_os_1-50.pdf")
   sim_study_test %>% mutate(fits =  test_fits) %>% 
     saveRDS(file = "output_xl/test_sd_sticky_pts_my_draw_re_sd.Rds")
 
