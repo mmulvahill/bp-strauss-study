@@ -121,7 +121,7 @@ print_diag_PDF <- function(tidy_pulse_df) {
     print(temp$poster_location[[i]], vp = viewport(layout.pos.row = 5, layout.pos.col = 1:2))
     print(temp$trace_plot[[i]], vp = viewport(layout.pos.row = 2:4, layout.pos.col = 2:2))
     print(temp$poster_plot[[i]], vp = viewport(layout.pos.row = 2:4, layout.pos.col = 1)) 
-    grid.text(paste("Dataset", temp$sim_num), 
+    grid.text(paste("Dataset", temp$sim_num[[i]]), 
               vp = viewport(layout.pos.row = 1, layout.pos.col = 1:2))
 
   }
