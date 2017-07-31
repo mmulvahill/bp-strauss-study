@@ -50,8 +50,10 @@ if (TEST & RUN) {
                          use_tibble = TRUE)
              })
 
-  sim_study_test %>% mutate(fits =  test_fits) %>% print_diag_PDF  
-  saveRDS(test_fits, file = "output_xl/primary_analysis_reference_fits_orderstat_pbapply.Rds")
+  sim_study_test %>% mutate(fits =  test_fits) %>% 
+    print_diag_PDF  
+  sim_study_test %>% mutate(fits =  test_fits) %>% 
+    saveRDS(file = "output_xl/test_sd_sticky_pts_my_draw_re_sd.Rds")
 
 }
 
