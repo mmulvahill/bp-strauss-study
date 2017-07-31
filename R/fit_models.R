@@ -24,7 +24,7 @@ if (TEST & RUN) {
 
     collected_fits <- collect(test_fits)
     saveRDS(collected_fits, 
-            file = "remote-storage/fifth_run_mdplyr_42fits_larger_small_mass_meansd_wburnin.Rds")
+            file = "output_xl/fifth_run_mdplyr_42fits_larger_small_mass_meansd_wburnin.Rds")
     print_diag_PDF(collected_fits)
 
 } else if (RUN & REFERENCE) {
