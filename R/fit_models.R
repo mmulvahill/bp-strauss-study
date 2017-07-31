@@ -13,7 +13,6 @@ if (TEST & RUN) {
     sim_study %>% 
     rownames_to_column(var = "id") %>% 
     filter(sim_num %in% 1:2) %>%
-    #filter(case == "reference" & sim_num %in% 1:5 & prior_scenario %in% c("orderstat", "hardcore40")) %>%
     mutate(this_spec = map(pulse_spec_args, ~ do.call(pulse_spec, .x))) %>%
     partition %>%
     #   rowwise %>%
@@ -24,43 +23,35 @@ if (TEST & RUN) {
                                    use_tibble = TRUE)))
 
     collected_fits <- collect(test_fits)
-#     collected_fits_dedup <- collected_fits %>% select(-pulse_spec_args, -this_spec)
-#     object_size(collected_fits)
-#     object_size(collected_fits_dedup)
     saveRDS(collected_fits, 
             file = "remote-storage/fifth_run_mdplyr_42fits_larger_small_mass_meansd_wburnin.Rds")
     print_diag_PDF(collected_fits)
 
-} else if (RUN) {
+} else if (RUN & REFERENCE) {
 
-  cluster <- create_cluster(32)
-  set_default_cluster(cluster)
-  cluster_library(cluster, c("pulsatile", "purrr"))
-  get_default_cluster()
+  library(parallel)
 
-  # THIS WORKS
-  test_fits <- 
+  # TODO: Output too large for keeping in RAM
+  sim_study_test <- 
     sim_study %>% 
     rownames_to_column(var = "id") %>% 
     filter(case == "reference" & 
            prior_scenario %in% c("orderstat", "hardcore40", "strauss40_010")) %>%
-    mutate(this_spec = map(pulse_spec_args, ~ do.call(pulse_spec, .x))) %>%
-    partition %>%
-    mutate(fits = map2(simulation, this_spec,
-                       ~ fit_pulse(.data = .x$data, 
-                                   spec = .y, 
-                                   thin = 50, burnin = 50000, iters = 250000, 
-                                   use_tibble = TRUE)))
+    filter(prior_scenario == "orderstat") %>%
+    filter(sim_num %in% 1:50) %>%
+    mutate(this_spec = map(pulse_spec_args, ~ do.call(pulse_spec, .x))) 
 
-    collected_fits <- collect(test_fits)
-    saveRDS(collected_fits, file = "output_xl/primary_analysis_reference_fits.Rds")
-    print_diag_PDF(collected_fits)
+  test_fits <- 
+    pblapply(1:nrow(sim_study_test), cl = 11, 
+             function(x) {
+               fit_pulse(.data = sim_study_test$simulation[[x]]$data, 
+                         spec  = sim_study_test$this_spec[[x]], 
+                         thin  = 50, burnin = 50000, iters = 250000, 
+                         use_tibble = TRUE)
+             })
 
-} else {
-
-  sim_study <-
-    readRDS("../remote-storage/fifth_run_mdplyr_42fits_larger_small_mass_meansd_wburnin.Rds")
-
+  sim_study_test %>% mutate(fits =  test_fits) %>% print_diag_PDF  
+  saveRDS(test_fits, file = "output_xl/primary_analysis_reference_fits_orderstat_pbapply.Rds")
 
 }
 
