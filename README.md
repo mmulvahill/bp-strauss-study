@@ -25,5 +25,10 @@ apt-cache madison docker-ce
 sudo apt-get install docker-ce=17.06.0~ce-0~ubuntu
 sudo docker run hello-world
 
+# Build and run container
 docker build -t bp-strauss-study .
+docker run -it bp-strauss-study bash
+
+# Run project
+Rscript build.R
 ```

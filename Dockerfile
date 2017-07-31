@@ -35,12 +35,9 @@ RUN apt-get -qq update \
     && install2.r --error \
         pbapply pryr assertr ggthemes\
     && R -e "options(repos='https://mran.microsoft.com/snapshot/2017-07-14/')" \
-    && git clone https://github.com/mmulvahill/bp-strauss-study.git \
-		&& cd bp-strauss-study \
 		&& git submodule init \
 		&& git submodule update \
-    && R -e "library(devtools); \
-        		 install('lib/pulsatile');" 
+    && R -e "library(devtools); install('lib/pulsatile');" 
 
 
  # go into the repo directory
