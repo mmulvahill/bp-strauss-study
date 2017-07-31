@@ -37,24 +37,20 @@ library(pbapply)
 
 theme_set(theme_tufte())
         
-setwd("~/Projects/BayesPulse/bp-strauss-study/")
+#setwd("~/Projects/BayesPulse/bp-strauss-study/")
 
 # Number of cores to use - This would need to be incorporated into other scripts
 #n.cores <- 4
 # options("stringsAsFactors" = FALSE)
 #options("verbose" = TRUE)
-#remote_dir <- "./remote-storage/"
-# switch(Sys.info()[["sysname"]],
-       #Linux = 
-file.remove("remote-storage")
-file.symlink("~/Projects/BayesPulse/remote-storage", "remote-storage")
-remote_dir <- "./remote-storage"
+# file.remove("remote-storage")
+# file.symlink("~/Projects/BayesPulse/remote-storage", "remote-storage")
+# remote_dir <- "./remote-storage"
 
 #---------------------------------------------------------------------
 # Install pulsatile package
 #---------------------------------------------------------------------
 
-devtools::install("lib/pulsatile") #, ref = "tag:biometrics")
 library(pulsatile)
 
 

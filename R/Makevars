@@ -1,0 +1,5 @@
+C=clang
+CXX=clang++
+CC=ccache clang -Qunused-arguments
+CXX=ccache clang++ -Qunused-arguments
+CCACHE_CPP2=yes
