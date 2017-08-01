@@ -35,7 +35,7 @@ sim_parms <-
              ipi_var    = 40, 
              ipi_min    = 4,  
              mass_mean  = 4, 
-             mass_sd    = 2.1, # should range from exp(0.75) to exp(6.5)
+             mass_sd    = 2, # should range from exp(0.75) to exp(6.5)
              width_mean = 5,   
              width_sd   = 1,
              constant_baseline = 2.6,
