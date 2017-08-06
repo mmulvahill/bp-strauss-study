@@ -1,0 +1,9 @@
+
+
+
+# Report on RE SD sticky points
+
+Ran with Unif(0.1, 150) prior on width re\_sd and still occurred
+
+Using both simulated widths of N(35, 10), and N(5, 1).  See commits 66dcbd7 and 4f8270a
+
