@@ -75,6 +75,14 @@ priors <- priors %>% nest(-case, -prior_scenario, .key = "pulse_spec_args")
 
 sim_study <- full_join(sim_study, priors)
 
+#---------------------------------------
+# Add in pulse_spec() objects
+#---------------------------------------
+sim_study <- 
+    sim_study %>% 
+    rownames_to_column(var = "id") %>% 
+    mutate(this_spec = map(pulse_spec_args, ~ do.call(pulse_spec, .x))) 
+
 rm(priors)
 
 

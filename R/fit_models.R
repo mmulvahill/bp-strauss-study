@@ -11,9 +11,7 @@ if (TEST & RUN) {
   # THIS WORKS
   test_fits <- 
     sim_study %>% 
-    rownames_to_column(var = "id") %>% 
     filter(sim_num %in% 1:2) %>%
-    mutate(this_spec = map(pulse_spec_args, ~ do.call(pulse_spec, .x))) %>%
     partition %>%
     #   rowwise %>%
     mutate(fits = map2(simulation, this_spec,
@@ -34,12 +32,10 @@ if (TEST & RUN) {
   # TODO: Output too large for keeping in RAM
   sim_study_test <- 
     sim_study %>% 
-    rownames_to_column(var = "id") %>% 
     filter(case == "reference" & 
            prior_scenario %in% c("orderstat", "hardcore40", "strauss40_010")) %>%
     filter(prior_scenario == "orderstat") %>%
-    filter(sim_num %in% 1:50) %>%
-    mutate(this_spec = map(pulse_spec_args, ~ do.call(pulse_spec, .x))) 
+    filter(sim_num %in% 1:50) 
 
   test_fits <- 
     pblapply(1:nrow(sim_study_test), cl = 11, 

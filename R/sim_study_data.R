@@ -53,10 +53,10 @@ sim_parms <- bind_rows(# Reference case #
                                             error_var = 0.02))
 
 
-#-----------------------------------------------------------
+#---------------------------------------
 # Generate simulations 
 #   Note: sims based on CHG 2013
-#-----------------------------------------------------------
+#---------------------------------------
 set.seed(2017-06-23)
 number_of_datasets <- 200
 
@@ -74,10 +74,10 @@ sim_study <-
 # sim_study$simulation[1:5] %>% map(plot)
 
 
-#-----------------------------------------------------------
-# Save parameters as a dataframe for later reference
-# and create pdf for Nichole
-#-----------------------------------------------------------
+#---------------------------------------
+# Save parameters as a dataframe for 
+#   later reference and create pdf for Nichole
+#---------------------------------------
 
 # Sim parameters table
 caption <- 
@@ -116,9 +116,8 @@ dev.off()
 
 
 #-----------------------------------------------------------
-# Save sims and clean up workspace
+# Clean up workspace
 #-----------------------------------------------------------
-saveRDS(sim_study, file = "./output/sim_study.Rds")
 rm(sim_parms, number_of_datasets, sim_figs, caption, parmstable)
 
 

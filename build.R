@@ -52,6 +52,7 @@ theme_set(theme_tufte())
 #---------------------------------------------------------------------
 
 library(pulsatile)
+source("R/bulk_diagnostics_pdf.R") # MOVE TO PACKAGE
 
 
 #---------------------------------------------------------------------
@@ -64,6 +65,8 @@ source("R/sim_study_pulsespecs.R")
 # sim_study object (data_frame w/ list-cols) now contains all info by row
 # needed to run mcmc
 
+saveRDS(sim_study, file = "./output/sim_study.Rds")
+
 
 #---------------------------------------------------------------------
 # B) Prepare healthy patient data from LH Depression Study
@@ -75,7 +78,6 @@ source("R/sim_study_pulsespecs.R")
 #---------------------------------------------------------------------
 # 1) Run MCMC analyses
 #---------------------------------------------------------------------
-source("R/bulk_diagnostics_pdf.R")
 source("R/fit_models.R")
 
 # apply pulsespec()
