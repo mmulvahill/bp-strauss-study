@@ -52,7 +52,7 @@ priors <- bind_rows(priors,
 priors <- 
   bind_rows(priors %>% mutate(case = "reference"),
             ## Low mass - same as above, but prior.mass.mean ~= exp(0.30)
-            priors %>% mutate(case = "low-mass", prior_mass_mean = 1.4),
+            priors %>% mutate(case = "low-mass", prior_mass_mean = 2),
             ## High error
             priors %>% mutate(case = "high-error"))
 

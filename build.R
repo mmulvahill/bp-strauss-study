@@ -51,6 +51,7 @@ theme_set(theme_tufte())
 # Install pulsatile package
 #---------------------------------------------------------------------
 
+install("lib/pulsatile")
 library(pulsatile)
 source("R/bulk_diagnostics_pdf.R") # MOVE TO PACKAGE
 
