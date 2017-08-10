@@ -1,0 +1,95 @@
+---
+title: "Report on RE_SD estimation with 1 minute sampling intervals"
+author: "Matt Mulvahill"
+date: "`r Sys.Date()`"
+output: 
+  bookdown::html_document2:
+    theme: simplex
+    toc: true
+    toc_float: 
+      collapsed: false
+    number_sections: true
+  bookdown::word_document2: 
+    highlight: "tango"
+    fig_caption: true
+  md_document:
+    variant: markdown_github
+---
+
+
+```{r workspace-setup, include=FALSE}
+library(readr)
+library(tidyverse)
+library(pulsatile)
+```
+
+```{r knitr-options, include=FALSE}
+library(knitr)
+# Global chunk options 
+opts_chunk$set(root.dir = '~/Projects/BayesPulse/bp-strauss-study/',
+               fig.path   = 'output/reports/figures/',
+               #fig.align  = 'center',
+               cache      = TRUE,
+               echo       = FALSE,
+               message    = TRUE,
+               warning    = TRUE)
+opts_knit$set(eval.after = c("fig.cap"))
+```
+
+
+# Overview
+
+The point of this experiment is to see if we can reproduce the sticky point
+issue with significantly more data.  To do so, we will generate a dozen
+simulated datasets with a sampling interval of 1 minute, and otherwise the same
+input parameters.
+
+# Simulate data
+
+
+
+```{r simulate}
+
+set.seed(2017-08-04)
+sim1min <- simulate_pulse(num_obs = 1440, interval = 1, 
+                          ipi_mean   = 120, 
+                          ipi_var    = 4000, 
+                          ipi_min    = 40,  
+                          error_var  = 0.005, 
+                          mass_mean  = 4, 
+                          mass_sd    = 2, 
+                          width_mean = 35,
+                          width_sd   = 10,
+                          constant_baseline = 2.6,
+                          constant_halflife = 45)
+
+plot(sim1min)
+```
+
+
+```{r fit}
+# set.seed(2017-10-10)
+priors1min <- pulse_spec(location_prior_type    = "order-statistic",
+                         prior_location_gamma   = NA,
+                         prior_location_range   = NA,
+                         prior_mass_mean        = 4,
+                         prior_mass_var         = 100,
+                         prior_width_mean       = 35,
+                         prior_width_var        = 100,
+                         prior_baseline_mean    = 2.6,
+                         prior_baseline_var     = 100,
+                         prior_halflife_mean    = 45,
+                         prior_halflife_var     = 100,
+                         prior_error_alpha      = 0.0001,
+                         prior_error_beta       = 0.0001,
+                         prior_max_sd_mass      = 100,
+                         prior_max_sd_width     = 150,
+                         prior_mean_pulse_count = 12)
+
+source("R/detect_sticky.R")
+fit1min <- sticky_loop(.data = sim1min$data, .spec = priors1min)
+
+bp_trace(fit1min)
+
+
+```
