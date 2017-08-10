@@ -1,9 +1,152 @@
+---
+title: "Report on RE_SD stickey points"
+author: "Matt Mulvahill"
+date: "`r Sys.Date()`"
+output: 
+  bookdown::html_document2:
+    theme: simplex
+    toc: true
+    toc_float: 
+      collapsed: false
+    number_sections: true
+  bookdown::word_document2: 
+    highlight: "tango"
+    fig_caption: true
+    reference_docx: Rmd/reference-doc.docx
+  md_document:
+    variant: markdown_github
+---
+
+
+```{r workspace-setup, include=FALSE}
+library(tidyverse)
+library(pulsatile)
+```
+
+```{r knitr-options, include=FALSE}
+# Global chunk options 
+library(knitr)
+opts_chunk$set(root.dir = '~/Projects/BayesPulse/bp-strauss-study/',
+               fig.path   = 'output/reports/figures/',
+               #fig.align  = 'center',
+               cache      = TRUE,
+               echo       = FALSE,
+               message    = TRUE,
+               warning    = TRUE)
+opts_knit$set(eval.after = c("fig.cap"))
+```
+
+
+# Test runs
+
+Ran with Unif(0.1, 150) prior on width re\_sd and still occurred under 2
+simulated cases:
+1. $\omega_k \sim t^{+}(5, 1)$
+1. $\omega_k \sim t^{+}(35, 10)$
+
+See commits 66dcbd7 and 4f8270a.
+
+# Case studies for further exploration
+
+In the $\omega_k \sim t^{+}(35, 10)$ case (commit 66dcbd7), approximately 5
+fits of 50 had major sticky points and a few additional showed short-lived
+sticky points. Dataset 22 had a severe case and will be investigated further.
+
+```{r load-data22}
+
+allsims <- readRDS("./output_xl/test_ref_os_1-50_min0.1_lrgwidth.Rds")
+data22 <- allsims %>% filter(sim_num == 22)
+
+```
+
+In the original run, we saw the sd width get stuck at near 0 and the mean pulse
+width stuck near 50 for around 60,000 iterations.  
+
+```{r trace22}
+map(data22$fits, bp_trace)
+```
+```{r posteriors22}
+map(data22$fits, bp_posteriors)
+```
+
+So, what criteria would identify this sticky point?
+
+```{r sticky-criteria}
+
+source("R/detect_sticky.R")
+
+  
+```
+
+
+```{r rerun22}
+
+
+fit <- sticky_loop(.data = data22$simulation[[1]]$data,
+                   .spec = data22$this_spec[[1]],
+                   run_length = 1000,
+                   n_rollavg = 50)
+
+saveRDS(fit, file = "./output_xl/sim22_stickypoint_alliters.Rds")
+
+fit <- readRDS(file = "./output_xl/sim22_stickypoint_alliters.Rds")
+bp_trace(fit$fit)
+
+
+```
+
+So, seed of 21 with simulated dataset 22 resulted in an extended sticky point.
+All seeds $<21$ did not.
+
+```{r double-check-22-seed21}
+set.seed(21)
+doublecheckfit22 <- fit_pulse(.data = data22$simulation[[1]]$data,
+                              spec = data22$this_spec[[1]], 
+                              thin  = 1, burnin = 0,
+                              iters = 250000, use_tibble = TRUE)
+
+x11()
+bp_trace(doublecheckfit22)
+     
+```
+
+Now inspect the chains for clues... 
+
+```{r inspectchains}
+
+iter <- 164300:170000 
+
+fit$fit %>% common_chain(.) %>%
+  select(iteration, num_pulses, mean_pulse_width, sd_widths) %>%
+  filter(iteration %in% iter) %>%
+  print(n=1000)
+
+fit$fit %>% pulse_chain(.) %>%
+  select(iteration, total_num_pulses, pulse_num, width, eta_width) %>%
+  filter(iteration %in% 167500)  #%>%
+  summarise(mean = mean(width), sd = sd(width))
+  print(n=500)
+
+```
 
 
 
-# Report on RE SD sticky points
 
-Ran with Unif(0.1, 150) prior on width re\_sd and still occurred
 
-Using both simulated widths of N(35, 10), and N(5, 1).  See commits 66dcbd7 and 4f8270a
+
+
+```{r check-diffRNG}
+RNGkind("L'Ecuyer-CMRG")
+RNGkind()
+
+test_fits <- 
+  mclapply(1:nrow(sim_study_test), cl = 11, 
+           function(x) {
+             fit_pulse(.data = sim_study_test$simulation[[x]]$data, 
+                       spec  = sim_study_test$this_spec[[x]], 
+                       thin  = 1, burnin = 0, iters = 250000, 
+                       use_tibble = TRUE)
+           })
+```
+
 
