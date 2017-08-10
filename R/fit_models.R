@@ -32,6 +32,7 @@ if (TEST & RUN) {
   # TODO: Output too large for keeping in RAM
   sim_study_test <- 
     sim_study %>% 
+    mutate(seed = 1:nrow(.)) %>%
     filter(case == "reference" & 
            prior_scenario %in% c("orderstat", "hardcore40", "strauss40_010")) %>%
     filter(prior_scenario == "orderstat") %>%
