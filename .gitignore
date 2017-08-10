@@ -35,3 +35,4 @@ remote-data/simulations
 remote-data/obesity
 remote-output
 remote-storage
+output_xl/all_google_results.Rds

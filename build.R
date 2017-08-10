@@ -60,9 +60,9 @@ source("R/bulk_diagnostics_pdf.R") # MOVE TO PACKAGE
 # A) Create simulated data
 #---------------------------------------------------------------------
 # Generate simulated data 
-source("R/sim_study_data.R")
+source("R/sim_study_data.R", echo = TRUE)
 # Create pulse_spec objects, and join with sim_study object
-source("R/sim_study_pulsespecs.R")
+source("R/sim_study_pulsespecs.R", echo = TRUE)
 # sim_study object (data_frame w/ list-cols) now contains all info by row
 # needed to run mcmc
 
